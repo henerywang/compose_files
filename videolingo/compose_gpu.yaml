@@ -1,0 +1,30 @@
+services:
+  jiuzhou.ai.server:
+    image: henery_ai_img:v1
+    container_name: videolingo_henery
+    stdin_open: true
+    tty: true
+    # --gpus all 的现代标准写法
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all        # 等价于 --gpus all
+              capabilities: [gpu]
+    volumes:
+      - /dev:/dev
+      - /home/henery/VideoLingo:/VideoLingo
+    devices:
+      - /dev:/dev:rwm
+    device_cgroup_rules:
+      - 'c 81:* rmw'
+      - 'c 189:* rmw'
+    shm_size: 8g
+    ports:
+      - "8501:8501"
+    privileged: false
+    command: >
+      /bin/sh -c '
+      bash
+      '
