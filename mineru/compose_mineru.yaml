@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mineru-vllm:
+    image: vllm/vllm-openai:latest
+    container_name: mineru_vllm_server
+    restart: unless-stopped
+    ports:
+      - "9988:9988"
+    volumes:
+      # 将宿主机的模型目录映射到容器内的 /model 目录
+      - /home/share/userFile/models/mineru/models/OpenDataLab/MinerU2___5-Pro-2604-1___2B:/model
+    # PyTorch 和 vLLM 需要较大的共享内存，使用 host 模式避免 out of shared memory 错误
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
+    command: 
+      - "--model"
+      - "/model"
+      - "--served-model-name"
+      - "mineru"
+      - "--port"
+      - "9988"
+      - "--trust-remote-code"  # 允许执行模型自带的自定义代码（如果有）
+      # - "--max-model-len" 
+      # - "4096" # 如果显存不足，可以取消注释并适当调小上下文长度
