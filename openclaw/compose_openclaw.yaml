@@ -1,0 +1,18 @@
+services:
+  openclaw-gateway:
+    image: ghcr.io/openclaw/openclaw:latest
+    container_name: openclaw
+    restart: unless-stopped
+    ports:
+      - "18789:18789"
+    dns:
+      - 223.5.5.5        # 阿里云公共 DNS
+      - 114.114.114.114  # 国内 114 公共 DNS
+      - 8.8.8.8          # 谷歌公共 DNS，作为备用兜底
+    volumes:
+      - /mnt/d/work/claw/data:/root/.openclaw/state
+      - /mnt/d/work/claw/workspace:/root/workspace
+networks:
+  sq_net:
+    external: true
+    name: safe-quant-net
