@@ -1,4 +1,13 @@
 services:
+  header-scrubber:
+      image: nginx:alpine
+      container_name: litellm-nginx-scrubber
+      ports:
+        - "8080:8080" # 暴露端口，方便你在宿主机用 curl 测试或者 Wireshark 抓包
+      extra_hosts:
+        - "www.fusiononecenter.xfusion.com:10.200.244.2"
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf:ro
   one-api:
     image: justsong/one-api
     container_name: one-api
@@ -7,5 +16,6 @@ services:
       - "3000:3000"
     environment:
       - TZ=Asia/Shanghai
+
     volumes:
-      - /home/henery/data/one-api:/data
+      - /mnt/c/Users/henery/code/compose_files/one_api:/data
